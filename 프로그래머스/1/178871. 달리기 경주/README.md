@@ -70,5 +70,53 @@
 
 <p>4등인 "kai" 선수가 2번 추월하여 2등이 되고 앞서 3등, 2등인 "poe", "soe" 선수는 4등, 3등이 됩니다. 5등인 "mine" 선수가 2번 추월하여 4등, 3등인 "poe", "soe" 선수가 5등, 4등이 되고 경주가 끝납니다. 1등부터 배열에 담으면 ["mumu", "kai", "mine", "soe", "poe"]이 됩니다.</p>
 
+### 풀이 방식
+
+<hr>
+
+<h5>ArrayList 사용_시간초과 HashMap을 사용하여 해결</h5>
+
+<p>ArrayList를 사용하여 호명된 플레이어를 찾고 앞선 플레이어와 교체하는 방식을 사용했을 경우 시간 초과가 발생, HashMap을 사용하여 플레이어를 찾는 시간을 줄여 문제 해결</p>
+
+
+```java
+package org.example.programmers.level1;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Solution {
+
+    public String[] solution(String[] players, String[] callings) {
+
+        String[] answer = {};
+
+        Map<String, Integer> playerMap = new HashMap<>();
+
+        for(int i = 0; i < players.length; i++) {
+            playerMap.put(players[i], i);
+        }
+
+        for(int i = 0; i < callings.length; i++) {
+
+            Integer callingIdx = playerMap.get(callings[i]);
+            String prevPlayer = players[callingIdx-1];
+
+            players[callingIdx] = prevPlayer;
+            players[callingIdx-1] = callings[i];
+
+            playerMap.put(callings[i], callingIdx-1);
+            playerMap.put(prevPlayer, callingIdx);
+        }
+
+        answer = players;
+
+        return answer;
+    }
+}
+```
+
+
+
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
