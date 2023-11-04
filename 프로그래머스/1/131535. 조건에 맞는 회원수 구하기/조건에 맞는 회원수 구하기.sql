@@ -1,0 +1,8 @@
+-- 코드를 입력하세요
+SELECT count(*)
+FROM USER_INFO
+WHERE 1=1
+    AND JOINED >= '20210101' 
+    AND JOINED < '20220101'
+    AND AGE >= 20
+    AND AGE <= 29
