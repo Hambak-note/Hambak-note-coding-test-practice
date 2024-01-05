@@ -70,7 +70,7 @@ for target in targets:
    - 정렬: O(nlogn)
    - target에 대해 이진 탐색을 수행했을 때: O(m log n)
       - 이진 탐색의 시간 복잡도 log n 이며 이를 m번 반복하기 때문
-    - 총 시간 복잡도: N log N
+    - 총 시간 복잡도: O(N log N)
 - 제출 결과: 정답(508ms)
 
 _탐색 방법 설명_
