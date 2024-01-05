@@ -42,13 +42,12 @@ _소스코드_
 from typing import List
 
 def brute_force_search(nArr: List[int], target: int) -> int:
-    
-    count = 0
 
     for val in nArr:
         if target == val:
-            count+=1
-    return count
+            return 1
+    return 0
+
 
 
 n = int(input())
