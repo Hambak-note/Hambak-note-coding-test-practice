@@ -1,6 +1,5 @@
 n = int(input())
 nArr = list(map(int, input().split()))
-nArr.sort()
 
 m = int(input())
 targets = list(map(int, input().split()))
