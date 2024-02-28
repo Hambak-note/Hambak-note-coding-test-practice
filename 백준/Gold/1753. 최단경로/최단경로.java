@@ -1,6 +1,5 @@
 
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,72 +7,75 @@ import java.util.*;
 
 public class Main {
 
-    static int v; //정점의 개수
-    static int e; //간선의 개수
-    static int start; //시작 정점
-    static int[] dist = new int[20005]; //최단 거리
-    static List<Pair>[] adj = new ArrayList[20005];
+    private static final int INF = Integer.MAX_VALUE;
+    private static int v; //정점의 개수
+    private static int e; //간선의 개수
+    private static int k; //시작 정점의 번호
 
-    static class Pair implements Comparable<Pair> {
-        int w;
-        int v;
-        public Pair() {};
-        public Pair(int w, int v) {
-            this.w = w;
-            this.v = v;
-        }
+    private static int from;
+    private static int to;
+    private static int cost;
 
-        @Override
-        public int compareTo(Pair o) {
-            return Integer.compare(this.w, o.w);
-        }
-    }
+    private static List<int[]> adj[];
+    private static int[] distance; //최단 거리 테이블
+    private static PriorityQueue<int[]> pq;
+
 
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
+
         v = Integer.parseInt(st.nextToken());
         e = Integer.parseInt(st.nextToken());
-        start = Integer.parseInt(br.readLine());
 
-        Arrays.fill(dist, 1, v+1, Integer.MAX_VALUE);
+        k = Integer.parseInt(br.readLine());
+
+        adj = new ArrayList[v+1];
 
         for(int i = 1; i <= v; i++) {
             adj[i] = new ArrayList<>();
         }
 
-        while(e-- > 0) {
-            int u,v,w;
+        for(int i = 0; i < e; i++) {
             st = new StringTokenizer(br.readLine());
-            u = Integer.parseInt(st.nextToken());
-            v = Integer.parseInt(st.nextToken());
-            w = Integer.parseInt(st.nextToken());
-            adj[u].add(new Pair(w, v));
+            from = Integer.parseInt(st.nextToken());
+            to = Integer.parseInt(st.nextToken());
+            cost = Integer.parseInt(st.nextToken());
+
+            adj[from].add(new int[]{cost, to});
         }
 
-        PriorityQueue<Pair> pq = new PriorityQueue<>();
-        dist[start] = 0;
+        pq = new PriorityQueue<>(new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return Integer.compare(o1[0], o2[0]);
+            }
+        });
 
-        //우선순위 큐에(0, 시작점) 추가
-        pq.add(new Pair(dist[start], start));
+        distance = new int[v+1];
+        Arrays.fill(distance, INF);
+        distance[k] = 0;
+
+        pq.add(new int[]{distance[k], k});
         while(!pq.isEmpty()) {
 
-            Pair cur = pq.poll();
+            int[] cur = pq.poll();
+            cost = cur[0];
+            to = cur[1];
 
-            if(dist[cur.v] != cur.w) continue;
-            for (Pair next : adj[cur.v]) {
+            if(distance[to] != cost) continue;
 
-                if(dist[next.v] <= dist[cur.v] + next.w) continue;
-                dist[next.v] = dist[cur.v] + next.w;
-                pq.add(new Pair(dist[next.v], next.v ));
+            for (int[] next : adj[to]) {
+                if(distance[next[1]] <= distance[to] + next[0]) continue;
+                distance[next[1]] = distance[to] + next[0];
+                pq.add(new int[]{distance[next[1]], next[1]});
             }
         }
 
         for(int i = 1; i <= v; i++) {
-
-            if(dist[i] == Integer.MAX_VALUE) System.out.println("INF");
-            else System.out.println(dist[i]);
+            if(distance[i] == INF) System.out.println("INF");
+            else System.out.println(distance[i]);
         }
     }
 }
