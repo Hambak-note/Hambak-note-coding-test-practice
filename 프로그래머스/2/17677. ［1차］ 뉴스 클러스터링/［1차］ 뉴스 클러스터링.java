@@ -1,58 +1,58 @@
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 class Solution {
-   public static int solution(String str1, String str2) {
-        int answer = 0;
+        public int solution(String str1, String str2) {
+            int answer = 0;
 
-        String filteredStr1 = str1.toLowerCase();
-        String filteredStr2 = str2.toLowerCase();
+            str1 = str1.toUpperCase();
+            str2 = str2.toUpperCase();
+
+            List<String> splitStr1 = new ArrayList<String>();
+            List<String> splitStr2 = new ArrayList<String>();
+
+            int numberOfIntersections = 0;
+            int numberOfUnions = 0;
+            double jacquardSimilarity;
 
 
-        HashMap<String, Integer> str1Map = new HashMap<>();
-        HashMap<String, Integer> str2Map = new HashMap<>();
-        for(int i = 0; i < filteredStr1.length()-1; i++) {
-            String sub = filteredStr1.substring(i, i + 2);
-            if(Character.isLetter(sub.charAt(0)) && Character.isLetter(sub.charAt(1))) {
-                str1Map.put(sub, str1Map.getOrDefault(sub, 0) + 1);
-            }
-        }
-
-        for(int i = 0; i < filteredStr2.length()-1; i++) {
-            String sub = filteredStr2.substring(i, i + 2);
-            if(Character.isLetter(sub.charAt(0)) && Character.isLetter(sub.charAt(1))) {
-                str2Map.put(sub, str2Map.getOrDefault(sub, 0) + 1);
-            }
-        }
-
-        int kyo = 0;
-        int hap = 0;
-        for (String key : str1Map.keySet()) {
-            
-            if(!str2Map.containsKey(key)) {
-                hap += str1Map.get(key);
-                continue;
+            //불필요 문자 제거 및 문자열 나누기
+            String subStr;
+            for(int i = 0; i < str1.length()-1; i++){
+                subStr = str1.substring(i, i+2);
+                if(Pattern.matches("^[A-Z]*$", subStr)){
+                    splitStr1.add(subStr);
+                }
             }
 
-            int str1Cnt = str1Map.get(key);
-            int str2Cnt = str2Map.get(key);
+            System.out.println(splitStr1.toString());
 
-            kyo += Math.min(str1Cnt, str2Cnt);
-            hap += Math.max(str1Cnt, str2Cnt);
-
-            str2Map.remove(key);
-        }
-
-        if(!str2Map.isEmpty()) {
-            for (String key : str2Map.keySet()) {
-                hap += str2Map.get(key);
+            for(int i = 0; i < str2.length()-1; i++){
+                subStr = str2.substring(i, i+2);
+                if(Pattern.matches("^[A-Z]*$", subStr)){
+                    splitStr2.add(subStr);
+                }
             }
+
+            if(splitStr1.isEmpty() && splitStr2.isEmpty()) return 65536;
+
+            int str1Length = str1.length();
+            String tempStr;
+            for(int i = 0; i < splitStr1.size(); i++){
+                tempStr = splitStr1.get(i);
+                if(splitStr2.contains(tempStr)){
+                    splitStr2.remove(tempStr);
+                    numberOfIntersections++;
+                }
+                numberOfUnions++;
+            }
+
+
+            numberOfUnions = numberOfUnions +  splitStr2.size();
+            jacquardSimilarity = (double)numberOfIntersections / numberOfUnions;
+            answer = (int) Math.floor(jacquardSimilarity * 65536);
+
+            return answer;
         }
-
-        if(hap == 0) return 65536;
-
-        double result = ((double) kyo / hap) * 65536;
-        answer = (int) Math.floor(result);
-
-        return answer;
     }
-}
