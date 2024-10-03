@@ -1,22 +1,37 @@
+
+
 class Solution {
-     public static String solution(int n, int t, int m, int p) {
+    public String solution(int n, int t, int m, int p) {
         String answer = "";
-        StringBuilder sb = new StringBuilder();
+
+        int numLength = t * m;
+
+        String convertedStr = convertToBaseN(numLength, n);
+
+        int index = p-1;
+        for(int i = 0; i < t; i++){
+            answer += convertedStr.charAt(index);
+            index += m;
+        }
+
+        answer = answer.toUpperCase();
+        System.out.println(answer);
+
+        return answer;
+    }
+
+
+    public String convertToBaseN(int numLength, int notation){
+
+        String convertedStr = "";
+
         int num = 0;
-        
-        while (sb.length() < t*m) {
-            String str = Integer.toString(num, n);
-            sb.append(str);
+        while(convertedStr.length() < numLength){
+            convertedStr = convertedStr + Integer.toString(num, notation);
             num++;
         }
 
-        String target = sb.toString().substring(0, t*m);
-        sb = new StringBuilder();
-        for(int i = p-1; i < target.length(); i+=m) {
-            sb.append(target.charAt(i));
-        }
-
-        answer = sb.toString().toUpperCase();
-        return answer;
+        return convertedStr;
     }
+
 }
