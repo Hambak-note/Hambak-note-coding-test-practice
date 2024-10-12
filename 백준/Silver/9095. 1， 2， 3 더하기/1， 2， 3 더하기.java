@@ -1,37 +1,38 @@
 
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Main {
 
-    static int t, n;
-    static int dp[] = new int[11];
+    private static final int MAX_N = 11;
+    
+    private static int tc;
+    private static int n;
+    private static int d[];
 
+    // D[i] = D[i-1] + D[i-2] + D[i-3]
     public static void main(String[] args) throws IOException {
 
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        t = Integer.parseInt(br.readLine());
-        makeDp();
 
-        while(t-- > 0) {
-
+        tc = Integer.parseInt(br.readLine());
+        initArrayD();
+        
+        for(int i = 0; i < tc; i++) {
+            
             n = Integer.parseInt(br.readLine());
-            System.out.println((dp[n]));
+            System.out.println(d[n]);
         }
-
     }
-
-    private static void makeDp(){
-
-        dp[1] = 1;
-        dp[2] = 2;
-        dp[3] = 4;
-
-        for(int i = 4; i < 11; i++) {
-            dp[i] = dp[i-1] + dp[i-2] + dp[i-3];
+    
+    private static void initArrayD() {
+        
+        d = new int[MAX_N];
+        d[1] = 1;
+        d[2] = 2;
+        d[3] = 4;
+        
+        for(int i = 4; i < MAX_N; i++) {
+            d[i] = d[i-1] + d[i-2] + d[i-3];
         }
     }
 }
