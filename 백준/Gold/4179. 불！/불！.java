@@ -1,23 +1,15 @@
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
-    private static int r;
-    private static int c;
-    private static char[][] maze;
-    private static int[][] fire;
-    private static int[][] jihun;
-
-    private static final int[] dx = new int[]{1, 0, -1, 0};
-    private static final int[] dy = new int[]{0, 1, 0, -1};
-
+    private static int r, c;
+    private static String[] board;
+    private static int[][] dist1;
+    private static int[][] dist2;
+    private static int[] dx = {0, 0, -1, 1};
+    private static int[] dy = {1, -1, 0, 0};
 
 
     public static void main(String[] args) throws IOException {
@@ -27,70 +19,73 @@ public class Main {
 
         r = Integer.parseInt(st.nextToken());
         c = Integer.parseInt(st.nextToken());
+        board = new String[r];
+        dist1 = new int[r][c];
+        dist2 = new int[r][c];
 
-        fire = new int[r][c];
-        jihun = new int[r][c];
         for(int i = 0; i < r; i++) {
-            Arrays.fill(fire[i], -1);
-            Arrays.fill(jihun[i], -1);
+            board[i] = br.readLine();
+            Arrays.fill(dist1[i], -1);
+            Arrays.fill(dist2[i], -1);
         }
 
-        maze = new char[r][c];
-        Queue<int[]> fireQ = new LinkedList<>();
-        Queue<int[]> jihunQ = new LinkedList<>();
+        Queue<int[]> q1 = new LinkedList<>();
+        Queue<int[]> q2 = new LinkedList<>();
         for(int i = 0; i < r; i++) {
-            String cur = br.readLine();
             for(int j = 0; j < c; j++) {
 
-                maze[i][j] = cur.charAt(j);
-                if(maze[i][j] == 'F') {
-                    fireQ.add(new int[]{i, j});
-                    fire[i][j] = 0;
+                if(board[i].charAt(j) == 'F') {
+                    q1.add(new int[]{i, j});
+                    dist1[i][j] = 0;
                 }
-                if(maze[i][j] == 'J') {
-                    jihunQ.add(new int[]{i, j});
-                    jihun[i][j] = 0;
+
+                if(board[i].charAt(j) == 'J') {
+                    q2.add(new int[]{i, j});
+                    dist2[i][j] = 0;
                 }
             }
         }
 
-        //불이 퍼지는 것에 대한 BFS
-        while(!fireQ.isEmpty()) {
-            int[] cur = fireQ.poll();
-            for(int dir = 0; dir < dx.length; dir++) {
+        // BFS for Fire
+        while(!q1.isEmpty()) {
 
-                int nx = cur[0] + dx[dir];
-                int ny = cur[1] + dy[dir];
-                if(isOutOfBound(nx, ny)) continue;
-                if(fire[nx][ny] >= 0 || maze[nx][ny] == '#') continue;
-                fire[nx][ny] = fire[cur[0]][cur[1]] + 1;
-                fireQ.add(new int[]{nx, ny});
+            int[] cur = q1.poll();
+            int cx = cur[0];
+            int cy = cur[1];
+
+            for(int dir = 0; dir < 4; dir++) {
+                int nx = cx + dx[dir];
+                int ny = cy + dy[dir];
+
+                if(nx < 0 || ny < 0 || nx >= r || ny >= c) continue;
+                if(dist1[nx][ny] >= 0 || board[nx].charAt(ny) == '#') continue;
+                dist1[nx][ny] = dist1[cx][cy] + 1;
+                q1.add(new int[]{nx, ny});
             }
         }
 
-        //지훈이의 위치에 대한 BFS
-        while(!jihunQ.isEmpty()) {
-            int[] cur = jihunQ.poll();
-            for(int dir = 0; dir < dx.length; dir++) {
+        //BFS for Jihoon
+        while(!q2.isEmpty()) {
 
-                int nx = cur[0] + dx[dir];
-                int ny = cur[1] + dy[dir];
-                if(isOutOfBound(nx, ny)) {
-                    System.out.println(jihun[cur[0]][cur[1]]+1);
+            int[] cur = q2.poll();
+            int cx = cur[0];
+            int cy = cur[1];
+
+            for(int dir = 0; dir < 4; dir++) {
+                int nx = cx + dx[dir];
+                int ny = cy + dy[dir];
+
+                if(nx < 0 || ny < 0 || nx >= r || ny >= c) {
+                    System.out.println(dist2[cx][cy] + 1);
                     return;
                 }
-                if(jihun[nx][ny] >= 0 || maze[nx][ny] == '#') continue;
-                if(fire[nx][ny] != -1 && fire[nx][ny] <= jihun[cur[0]][cur[1]] + 1) continue;
-                jihun[nx][ny] = jihun[cur[0]][cur[1]] + 1;
-                jihunQ.add(new int[]{nx, ny});
+                if(dist2[nx][ny] >= 0 || board[nx].charAt(ny) == '#') continue;
+                if(dist1[nx][ny] != -1 && dist1[nx][ny] <= dist2[cx][cy] + 1) continue;
+                dist2[nx][ny] = dist2[cx][cy] + 1;
+                q2.add(new int[]{nx, ny});
             }
         }
-
+        
         System.out.println("IMPOSSIBLE");
-
-    }
-
-    private static boolean isOutOfBound(int x, int y) {
-        return x < 0 || y < 0 || x >= r || y >= c;
     }
 }
