@@ -1,18 +1,10 @@
-
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
 
-    static int n;
-    static int m;
-    static int[][] maze;
+    static int n, m;
+    static String[] board;
     static int[][] dist;
     static int[] dx = {1, -1, 0, 0};
     static int[] dy = {0, 0, 1, -1};
@@ -24,18 +16,14 @@ public class Main {
 
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
-        maze = new int[n][m];
+        board = new String[n];
         dist = new int[n][m];
+
         for(int i = 0; i < n; i++) {
-            Arrays.fill(dist[i], -1);
+            board[i] = br.readLine();
         }
 
-        for(int i = 0; i < n; i++){
-            String curRow = br.readLine();
-            for(int j = 0; j < m; j++) {
-                maze[i][j] = Character.getNumericValue(curRow.charAt(j));
-            }
-        }
+        for(int i = 0; i < n; i++) Arrays.fill(dist[i], -1);
 
         Queue<int[]> q = new LinkedList<>();
         q.add(new int[]{0, 0});
@@ -44,21 +32,21 @@ public class Main {
         while(!q.isEmpty()) {
 
             int[] cur = q.poll();
-            int curX = cur[0];
-            int curY = cur[1];
+            int cx = cur[0];
+            int cy = cur[1];
 
             for(int dir = 0; dir < 4; dir++) {
-                int nextX = curX + dx[dir];
-                int nextY = curY + dy[dir];
+                int nx = cx + dx[dir];
+                int ny = cy + dy[dir];
 
-                if(nextX < 0 || nextX >= n || nextY < 0 || nextY >= m) continue;
-                //시작 위치 인지 확인
-                if(dist[nextX][nextY] >= 0 || maze[nextX][nextY] != 1) continue;
-                dist[nextX][nextY] = dist[curX][curY] + 1;
-                q.add(new int[]{nextX, nextY});
+                if(nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if(dist[nx][ny] >= 0 || board[nx].charAt(ny) != '1') continue;
+
+                dist[nx][ny] = dist[cx][cy] + 1;
+                q.add(new int[]{nx, ny});
             }
         }
 
-        System.out.println(dist[n-1][m-1]+1);
-     }
+        System.out.println(dist[n-1][m-1] + 1);
+    }
 }
