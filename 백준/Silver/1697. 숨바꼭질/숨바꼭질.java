@@ -1,44 +1,39 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 
-    private static int subin;
-    private static int sister;
-    private static int[] dist;
+    private static final int MAX_POINT = 100001;
 
-    private static final int ARRAY_SIZE = 100_002;
+    private static int n, k;
+    private static int[] dist = new int[MAX_POINT];
+
 
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        subin = Integer.parseInt(st.nextToken());
-        sister = Integer.parseInt(st.nextToken());
-
-        dist = new int[ARRAY_SIZE];
+        n = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
+        
         Arrays.fill(dist, -1);
+        dist[n] = 0;
 
-        dist[subin] = 0;
         Queue<Integer> q = new LinkedList<>();
-        q.add(subin);
-        while(dist[sister] == -1) {
+        q.add(n);
+
+        while(dist[k] == -1) {
 
             int cur = q.poll();
-            for(int next : new int[]{cur -1, cur + 1, 2* cur}) {
-                if(next < 0 || next > 100000) continue;
+            for(int next : new int[]{cur - 1, cur + 1, 2 * cur}) {
+                if(next < 0 || next >= MAX_POINT) continue;
                 if(dist[next] != -1) continue;
-                dist[next] = dist[cur]+1;
+                dist[next] = dist[cur] + 1;
                 q.add(next);
             }
         }
-
-        System.out.println(dist[sister]);
+        
+        System.out.println(dist[k]);
     }
 }
