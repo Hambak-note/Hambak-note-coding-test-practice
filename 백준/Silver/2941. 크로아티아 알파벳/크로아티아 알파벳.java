@@ -1,28 +1,18 @@
-
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class Main {
 
-    private static String[] alphabets = new String[]{"c=", "c-", "dz=", "d-", "lj", "nj", "s=", "z="};
-    private static String inputStr;
+    private static String[] alphas = new String[]{"c=", "c-", "dz=", "d-", "lj", "nj", "s=", "z="};
 
     public static void main(String[] args) throws IOException {
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        inputStr = br.readLine();
+        String input = br.readLine();
 
-
-        for (String alphabet : alphabets) {
-            if(inputStr.contains(alphabet)) {
-                inputStr = inputStr.replace(alphabet, "!");
-            }
+        for(String alpha : alphas) {
+            if(input.contains(alpha)) input = input.replace(alpha, "!");
         }
-
-
-        System.out.println(inputStr.length());
-
+        
+        System.out.println(input.length());
     }
 }
